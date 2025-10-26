@@ -1,0 +1,67 @@
+
+
+services:
+  # Base de Datos para Products Service
+  mongodb:
+    image: mongo:latest
+    container_name: mongodb
+    ports:
+      - "27017:27017" # Solo para acceso externo si es necesario, si no, es opcional
+    volumes:
+      - mongodb_data:/data/db # Persistencia de datos
+    environment:
+      MONGO_INITDB_DATABASE: productos_db # Nombre de la DB
+
+  # Base de Datos para Users Service
+  mysql:
+    image: mysql:8.0
+    container_name: mysql
+    ports:
+      - "3306:3306" # Solo para acceso externo si es necesario, si no, es opcional
+    environment:
+      MYSQL_ROOT_PASSWORD: rootpassword # Contraseña de root, reemplázala por una más segura
+      MYSQL_DATABASE: node_mvc # Nombre de la DB
+    volumes:
+      - mysql_data:/var/lib/mysql # Persistencia de datos
+
+  # Microservicio de Usuarios (users-service)
+  users-service:
+    build:
+      context: ./users-service # Ruta al Dockerfile
+      dockerfile: Dockerfile
+    container_name: users-service
+    ports:
+      - "3001:3001"
+    depends_on:
+      - mysql # Asegura que MySQL inicie antes que este servicio
+    env_file:
+      - ./users-service/.env # Carga las variables de entorno
+
+  # Microservicio de Productos (products-service)
+  products-service:
+    build:
+      context: ./products-service # Ruta al Dockerfile
+      dockerfile: Dockerfile
+    container_name: products-service
+    ports:
+      - "3002:3002"
+    depends_on:
+      - mongodb # Asegura que MongoDB inicie antes que este servicio
+    env_file:
+      - ./products-service/.env # Carga las variables de entorno
+
+  # API Gateway
+  api-gateway:
+    build:
+      context: ./api-gateway # Ruta al Dockerfile
+      dockerfile: Dockerfile
+    container_name: api-gateway
+    ports:
+      - "3000:3000" # Puerto de acceso principal para el cliente
+    depends_on:
+      - users-service # Asegura que los microservicios estén activos
+      - products-service
+
+volumes:
+  mongodb_data:
+  mysql_data:
