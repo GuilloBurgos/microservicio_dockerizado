@@ -9,7 +9,7 @@ const app = express();
 const port = 3001;
 
 app.use(express.json());
-const PRODUCTS_SERVICE_URL = 'http://localhost:3002';
+const PRODUCTS_SERVICE_URL = 'http://products-service:3002';
 
 app.get('/productos-desde-usuarios', async (req, res) => {
     try {

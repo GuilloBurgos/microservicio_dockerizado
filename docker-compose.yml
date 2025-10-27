@@ -17,7 +17,7 @@ services:
     image: mysql:8.0
     container_name: mysql
     ports:
-      - "3306:3306" # Solo para acceso externo si es necesario, si no, es opcional
+      - "3307:3306" # Solo para acceso externo si es necesario, si no, es opcional
     environment:
       MYSQL_ROOT_PASSWORD: rootpassword # Contraseña de root, reemplázala por una más segura
       MYSQL_DATABASE: node_mvc # Nombre de la DB
@@ -65,3 +65,6 @@ services:
 volumes:
   mongodb_data:
   mysql_data:
+
+ 
+ 
