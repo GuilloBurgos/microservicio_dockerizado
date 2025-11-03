@@ -11,11 +11,9 @@ const PRODUCTS_SERVICE_URL = 'http://products-service:3002';
 // Middleware para parsear JSON, si es necesario para el API Gateway
 app.use(express.json());
 
-// Proxy para el servicio de usuarios
-// Todas las peticiones a /users (GET, POST, PUT, DELETE) serán redirigidas al servicio de usuarios
+
 app.use('/usuarios', proxy(USERS_SERVICE_URL , {
-  // Opcional: para cambiar el nombre de la ruta si fuera necesario
-  // Por ejemplo, si el microservicio usara /usuarios en lugar de /users
+  
   proxyReqPathResolver: function (req) {
     return req.originalUrl.replace('/users', '/usuarios');
   }
